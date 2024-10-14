@@ -2,8 +2,8 @@
 
 # Check if the correct number of arguments is provided
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <repository_path>"
-    exit 1
+	echo "Usage: $0 <repository_path>"
+	exit 1
 fi
 
 # Assign argument to variable
@@ -11,15 +11,24 @@ repo_path="$1"
 
 # Check if the FILTER_EXTENSION environment variable is set
 if [ -z "$FILTER_EXTENSION" ]; then
-    echo "Error: FILTER_EXTENSION environment variable is not set."
-    echo "Please set it using: heroku config:set FILTER_EXTENSION=your_extension"
-    exit 1
+	echo "Error: FILTER_EXTENSION environment variable is not set."
+	echo "Please set it using: heroku config:set FILTER_EXTENSION=ext1,ext2"
+	exit 1
 fi
 
-# Remove any leading dot from the extension if present
-extension="${FILTER_EXTENSION#.}"
+clean_extension() {
+	echo "$1" | sed 's/^[\. ]*//'
+}
 
-# Find and delete files with the specified extension
-find "$repo_path" -type f -name "*.$extension" -print -delete
+# Convert comma-separated string to array
+IFS=',' read -ra EXTENSIONS <<<"$FILTER_EXTENSION"
 
-echo "Deletion complete. All files with extension '.$extension' have been removed from $repo_path"
+for ext in "${EXTENSIONS[@]}"; do
+	# Clean the extension
+	clean_ext=$(clean_extension "$ext")
+
+	# Find and delete files with the current extension
+	find "$repo_path" -type f -name "*.$clean_ext" -delete
+
+	echo "All files with extension '.$ext' have been removed from $repo_path"
+done
