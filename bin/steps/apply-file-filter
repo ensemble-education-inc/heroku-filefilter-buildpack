@@ -9,6 +9,9 @@ fi
 # Assign argument to variable
 repo_path="$1"
 
+VAR_PATH="$ENV_DIR/FILTER_EXTENSION"
+FILTER_EXTENSION=$(cat "$VAR_PATH")
+
 # Check if the FILTER_EXTENSION environment variable is set
 if [ -z "$FILTER_EXTENSION" ]; then
 	echo "Error: FILTER_EXTENSION environment variable is not set."
