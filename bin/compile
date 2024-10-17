@@ -2,8 +2,13 @@
 
 echo "-----> Running file extension filter buildpack"
 
+BIN_DIR=$(
+	cd $(dirname $0)
+	pwd
+)
+SCRIPT_PATH="$BIN_DIR/steps/apply-file-filter"
+
 BUILD_DIR="$1"
-SCRIPT_PATH="$BUILD_DIR/bin/steps/apply-file-filter"
 
 chmod +x "$SCRIPT_PATH"
 
